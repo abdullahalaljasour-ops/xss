@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مختبر المحاكاة السيبراني | م. عبدالله بن جريد</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-bg: #111827;
+            --border-color: #1f2937;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 2px solid var(--accent-green);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 { margin: 0; font-size: 1.5rem; color: var(--accent-green); }
+        .brand p { margin: 5px 0 0; font-size: 0.9rem; color: var(--text-muted); }
+
+        .scoreboard {
+            background: #064e3b;
+            border: 1px solid var(--accent-green);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+
+        .lab-panel {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+        }
+        .lab-panel.active { display: block; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .box {
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #fff;
+            border-radius: 5px;
+            direction: ltr;
+        }
+
+        button.action-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button.action-btn:hover { opacity: 0.9; }
+
+        .code-monitor {
+            background: #000;
+            color: #38bdf8;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .highlight-inject { color: var(--accent-red); font-weight: bold; }
+        .alert {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+        .alert.success { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-green); color: var(--accent-green); display: block; }
+        .alert.error { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--accent-red); color: var(--accent-red); display: block; }
+
+        .toggle-defense {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand">
+        <h1>🛡️ مختبر محاكاة الثغرات الأمنية (Cyber Range Lab)</h1>
+        <p>إعداد وتطوير: المهندس عبدالله بن جريد — مهندس وأخصائي أمن سيبراني</p>
+    </div>
+    <div class="scoreboard">
+        التحديات المكتملة: <span id="score">0</span> / 3
+    </div>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sqli', this)">1. حقن SQL (SQL Injection)</button>
+        <button class="tab-btn" onclick="openTab('xss', this)">2. ثغرة XSS (Cross-Site Scripting)</button>
+        <button class="tab-btn" onclick="openTab('idor', this)">3. تجاوز الصلاحيات (IDOR)</button>
+    </div>
+
+    <!-- المختبر الأول: SQL Injection -->
+    <div id="sqli" class="lab-panel active">
+        <h2>تحدي SQL Injection: تجاوز بوابة الدخول</h2>
+        <p><strong>الهدف:</strong> حاول تسجيل الدخول كـ <code>admin</code> دون معرفة كلمة المرور، وذلك عبر التلاعب بمنطق الاستعلام البرمجي.</p>
+        
+        <div class="toggle-defense">
+            <input type="checkbox" id="sqli-patch" onchange="updateSQLPreview()">
+            <label for="sqli-patch">تفعيل الحماية (Prepared Statements / Parameterized Query)</label>
+        </div>
+
+        <div class="grid-2">
+            <div class="box">
+                <h3>نموذج تسجيل الدخول</h3>
+                <label>اسم المستخدم (Username):</label>
+                <input type="text" id="sql-user" placeholder="admin" oninput="updateSQLPreview()">
+                
+                <label>كلمة المرور (Password):</label>
+                <input type="text" id="sql-pass" placeholder="••••••" oninput="updateSQLPreview()">
+                
+                <button class="action-btn" onclick="runSQLSim()">تسجيل الدخول</button>
+                <div id="sql-result" class="alert"></div>
+            </div>
+
+            <div class="box">
+                <h3>شاشة مراقبة الخادم (Live Backend Query)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">شاهد كيف يتم بناء الاستعلام في قاعدة البيانات لحظياً:</p>
+                <div class="code-monitor" id="sql-query-display">
+                    SELECT * FROM users WHERE username = '' AND password = '';
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">
+                    💡 تلميح للمتدرب: جرب إغلاق علامة التنصيص <code>'</code> وإضافة شرط منطقي صحيح دائماً مثل <code>' OR '1'='1</code>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- المختبر الثاني: XSS -->
+    <div id="xss" class="lab-panel">
+        <h2>تحدي Reflected XSS: حقن الأكواد في المتصفح</h2>
+        <p><strong>الهدف:</strong> قم بحقن كود JavaScript داخل حقل البحث لإظهار نافذة منبثقة (Alert) أو استخراج كوكيز الجلسة الوهمي.</p>
+
+        <div class="toggle-defense">
+            <input type="checkbox" id="xss-patch">
+            <label for="xss-patch">تفعيل الحماية (HTML Sanitization / Output Encoding)</label>
+        </div>
+
+        <div class="grid-2">
+            <div class="box">
+                <h3>محرك بحث الموقع</h3>
+                <p style="font-size: 0.8rem; color: #fbbf24;">Session Cookie: <code>SESSION_ID=ABJ_99821_SECRET</code></p>
+                <input type="text" id="xss-input" placeholder="اكتب كلمة للبحث أو جرب: <img src=x onerror=alert('XSS')>">
+                <button class="action-btn" onclick="runXSSSim()">بحث</button>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #1f2937; border-radius: 6px;">
+                    <strong>نتائج البحث عن:</strong>
+                    <div id="xss-output" style="margin-top: 10px; color: var(--accent-green);">لا يوجد بحث بعد...</div>
+                </div>
+                <div id="xss-result" class="alert"></div>
+            </div>
+
+            <div class="box">
+                <h3>تحليل الكود المصدري (DOM Output)</h3>
+                <div class="code-monitor" id="xss-code-display">
+                    // الكود غير الآمن:<br>
+                    element.innerHTML = userInput;<br><br>
+                    // الكود الآمن:<br>
+                    element.textContent = userInput;
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- المختبر الثالث: IDOR -->
+    <div id="idor" class="lab-panel">
+        <h2>تحدي IDOR: الوصول غير المصرح به للبيانات</h2>
+        <p><strong>الهدف:</strong> أنت مسجل الدخول حالياً برقم المستخدم <code>104</code>. حاول الوصول إلى ملف المدير (Admin) عبر التلاعب بمعامل الرابط.</p>
+
+        <div class="box">
+            <label>شريط عنوان المتصفح المحاكى (Simulated URL):</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="idor-url" value="https://portal.aljasour.local/api/user?id=104" style="margin:0;">
+                <button class="action-btn" onclick="runIDORSim()">انتقال (Go)</button>
+            </div>
+
+            <div id="idor-profile" style="margin-top: 20px; padding: 15px; background: #1f2937; border-radius: 6px;">
+                <strong>البيانات المسترجعة من الخادم:</strong>
+                <pre id="idor-data" style="direction: ltr; text-align: left; color: #a7f3d0;">{ "id": 104, "name": "Trainee_Ahmed", "role": "Student" }</pre>
+            </div>
+            <div id="idor-result" class="alert"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let completed = { sqli: false, xss: false, idor: false };
+
+    function updateScore() {
+        const count = Object.values(completed).filter(Boolean).length;
+        document.getElementById('score').innerText = count;
+    }
+
+    function openTab(tabId, btn) {
+        document.querySelectorAll('.lab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // --- منطق محاكاة SQL Injection ---
+    function updateSQLPreview() {
+        const user = document.getElementById('sql-user').value;
+        const pass = document.getElementById('sql-pass').value;
+        const isPatched = document.getElementById('sqli-patch').checked;
+        const display = document.getElementById('sql-query-display');
+
+        if (isPatched) {
+            display.innerHTML = `PREPARE stmt FROM 'SELECT * FROM users WHERE username = ? AND password = ?';<br>EXECUTE stmt USING '${escapeHTML(user)}', '${escapeHTML(pass)}';`;
+        } else {
+            const formattedUser = user.includes("'") ? `<span class="highlight-inject">${escapeHTML(user)}</span>` : escapeHTML(user);
+            const formattedPass = pass.includes("'") ? `<span class="highlight-inject">${escapeHTML(pass)}</span>` : escapeHTML(pass);
+            display.innerHTML = `SELECT * FROM users WHERE username = '${formattedUser}' AND password = '${formattedPass}';`;
+        }
+    }
+
+    function runSQLSim() {
+        const user = document.getElementById('sql-user').value.trim();
+        const pass = document.getElementById('sql-pass').value.trim();
+        const isPatched = document.getElementById('sqli-patch').checked;
+        const resultBox = document.getElementById('sql-result');
+
+        if (isPatched) {
+            resultBox.className = 'alert error';
+            resultBox.innerHTML = '🛡️ تم صد الهجوم! الاستعلام المُعد مسبقاً (Prepared Statement) عامل المدخلات كنص عادي وليس كأوامر SQL.';
+            return;
+        }
+
+        const sqliPatterns = ["' or '1'='1", "' or 1=1", "' or 'a'='a", "admin' --", "admin'--"];
+        const isInjected = sqliPatterns.some(p => user.toLowerCase().includes(p) || pass.toLowerCase().includes(p));
+
+        if (isInjected) {
+            resultBox.className = 'alert success';
+            resultBox.innerHTML = '✅ تم اختراق المصادقة بنجاح! <br><strong>Flag:</strong> <code>FLAG{SQLi_Auth_Bypass_Master_2026}</code>';
+            completed.sqli = true;
+            updateScore();
+        } else {
+            resultBox.className = 'alert error';
+            resultBox.innerHTML = '❌ فشل تسجيل الدخول: اسم المستخدم أو كلمة المرور غير صحيحة.';
+        }
+    }
+
+    // --- منطق محاكاة XSS ---
+    function runXSSSim() {
+        const input = document.getElementById('xss-input').value;
+        const isPatched = document.getElementById('xss-patch').checked;
+        const output = document.getElementById('xss-output');
+        const resultBox = document.getElementById('xss-result');
+
+        if (isPatched) {
+            output.textContent = input;
+            resultBox.className = 'alert error';
+            resultBox.innerHTML = '🛡️ تم تعطيل كود HTML/JS وتحويله إلى نص آمن (Text Encoding).';
+            return;
+        }
+
+        // تنفيذ محاكاة XSS
+        output.innerHTML = input;
+        const xssTriggered = /<script|onerror|onload|javascript:|alert\(/i.test(input);
+        
+        if (xssTriggered) {
+            resultBox.className = 'alert success';
+            resultBox.innerHTML = '✅ تم اكتشاف وتنفيذ ثغرة XSS بنجاح! <br><strong>Flag:</strong> <code>FLAG{XSS_DOM_Execution_Confirmed}</code>';
+            completed.xss = true;
+            updateScore();
+        } else {
+            resultBox.style.display = 'none';
+        }
+    }
+
+    // --- منطق محاكاة IDOR ---
+    function runIDORSim() {
+        const url = document.getElementById('idor-url').value;
+        const dataBox = document.getElementById('idor-data');
+        const resultBox = document.getElementById('idor-result');
+
+        const match = url.match(/id=(\d+)/);
+        if (!match) {
+            dataBox.innerText = '{ "error": "Missing ID parameter" }';
+            return;
+        }
+
+        const id = match[1];
+        const mockDB = {
+            "101": '{ "id": 101, "name": "Eng_Abdullah_Admin", "role": "SuperAdmin", "secret_key": "KSA_CYBER_2030" }',
+            "102": '{ "id": 102, "name": "Sara_Analyst", "role": "SOC_Tier1" }',
+            "103": '{ "id": 103, "name": "Omar_Dev", "role": "Developer" }',
+            "104": '{ "id": 104, "name": "Trainee_Ahmed", "role": "Student" }'
+        };
+
+        if (mockDB[id]) {
+            dataBox.innerText = mockDB[id];
+            if (id === "101") {
+                resultBox.className = 'alert success';
+                resultBox.innerHTML = '✅ تم استغلال ثغرة IDOR والوصول لبيانات المدير! <br><strong>Flag:</strong> <code>FLAG{IDOR_Broken_Access_Control_101}</code>';
+                completed.idor = true;
+                updateScore();
+            } else {
+                resultBox.style.display = 'none';
+            }
+        } else {
+            dataBox.innerText = '{ "error": "User not found" }';
+            resultBox.style.display = 'none';
+        }
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+</script>
+
+</body>
+</html>
