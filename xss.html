@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مختبر المحاكاة السيبراني | م. عبدالله بن جريد</title>
+    <title>مختبر المحاكاة السيبراني المتقدم | م. عبدالله بن جريد</title>
     <style>
         :root {
             --bg-dark: #0b0f19;
@@ -12,6 +12,7 @@
             --accent-green: #10b981;
             --accent-red: #ef4444;
             --accent-blue: #3b82f6;
+            --accent-yellow: #fbbf24;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
         }
@@ -33,6 +34,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
 
         .brand h1 { margin: 0; font-size: 1.5rem; color: var(--accent-green); }
@@ -44,20 +46,30 @@
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        /* شريط التبويبات */
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
         .tab-btn {
             background: var(--card-bg);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 12px 24px;
+            padding: 10px 18px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: 0.2s;
         }
         .tab-btn.active, .tab-btn:hover {
             background: var(--accent-green);
@@ -70,7 +82,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 25px;
+            padding: 30px;
         }
         .lab-panel.active { display: block; }
 
@@ -84,7 +96,7 @@
             border-radius: 8px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"], input[type="password"], textarea, select {
             width: 100%;
             padding: 10px;
             margin: 8px 0 15px;
@@ -93,6 +105,7 @@
             color: #fff;
             border-radius: 5px;
             direction: ltr;
+            text-align: left;
         }
 
         button.action-btn {
@@ -103,6 +116,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            transition: 0.2s;
         }
         button.action-btn:hover { opacity: 0.9; }
 
@@ -116,9 +130,11 @@
             text-align: left;
             overflow-x: auto;
             border-left: 4px solid var(--accent-blue);
+            font-size: 0.9rem;
         }
 
         .highlight-inject { color: var(--accent-red); font-weight: bold; }
+        
         .alert {
             margin-top: 15px;
             padding: 12px;
@@ -136,6 +152,16 @@
             background: #1e293b;
             padding: 10px;
             border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            background: #1e293b;
+            color: var(--accent-yellow);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid #334155;
         }
     </style>
 </head>
@@ -143,116 +169,204 @@
 
 <header>
     <div class="brand">
-        <h1>🛡️ مختبر محاكاة الثغرات الأمنية (Cyber Range Lab)</h1>
+        <h1>🛡️ منصة المحاكاة السيبرانية المتقدمة (Cyber Range)</h1>
         <p>إعداد وتطوير: المهندس عبدالله بن جريد — مهندس وأخصائي أمن سيبراني</p>
     </div>
     <div class="scoreboard">
-        التحديات المكتملة: <span id="score">0</span> / 3
+        التحديات المكتملة: <span id="score">0</span> / 11
     </div>
 </header>
 
 <div class="container">
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('sqli', this)">1. حقن SQL (SQL Injection)</button>
-        <button class="tab-btn" onclick="openTab('xss', this)">2. ثغرة XSS (Cross-Site Scripting)</button>
-        <button class="tab-btn" onclick="openTab('idor', this)">3. تجاوز الصلاحيات (IDOR)</button>
+    <!-- شريط التنقل بين التحديات الـ 11 -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="openTab('t1', this)">1. SQL Injection</button>
+        <button class="tab-btn" onclick="openTab('t2', this)">2. XSS Attack</button>
+        <button class="tab-btn" onclick="openTab('t3', this)">3. IDOR Bypass</button>
+        <button class="tab-btn" onclick="openTab('t4', this)">4. JWT Escalation</button>
+        <button class="tab-btn" onclick="openTab('t5', this)">5. Command Injection</button>
+        <button class="tab-btn" onclick="openTab('t6', this)">6. Path Traversal</button>
+        <button class="tab-btn" onclick="openTab('t7', this)">7. CSRF Exploit</button>
+        <button class="tab-btn" onclick="openTab('t8', this)">8. File Upload</button>
+        <button class="tab-btn" onclick="openTab('t9', this)">9. Business Logic</button>
+        <button class="tab-btn" onclick="openTab('t10', this)">10. Weak Hash</button>
+        <button class="tab-btn" onclick="openTab('t11', this)">11. SOC Logs</button>
     </div>
 
-    <!-- المختبر الأول: SQL Injection -->
-    <div id="sqli" class="lab-panel active">
-        <h2>تحدي SQL Injection: تجاوز بوابة الدخول</h2>
-        <p><strong>الهدف:</strong> حاول تسجيل الدخول كـ <code>admin</code> دون معرفة كلمة المرور، وذلك عبر التلاعب بمنطق الاستعلام البرمجي.</p>
-        
+    <!-- التحدي 1: SQL Injection -->
+    <div id="t1" class="lab-panel active">
+        <h2>1. تحدي حقن قواعد البيانات (SQL Injection - Auth Bypass)</h2>
+        <p><strong>الهدف:</strong> تجاوز نموذج تسجيل الدخول كمسؤول <code>admin</code> عبر التلاعب بمنطق الاستعلام.</p>
         <div class="toggle-defense">
             <input type="checkbox" id="sqli-patch" onchange="updateSQLPreview()">
-            <label for="sqli-patch">تفعيل الحماية (Prepared Statements / Parameterized Query)</label>
+            <label for="sqli-patch">تفعيل الحماية (Prepared Statements)</label>
         </div>
-
         <div class="grid-2">
             <div class="box">
-                <h3>نموذج تسجيل الدخول</h3>
-                <label>اسم المستخدم (Username):</label>
+                <label>اسم المستخدم:</label>
                 <input type="text" id="sql-user" placeholder="admin" oninput="updateSQLPreview()">
-                
-                <label>كلمة المرور (Password):</label>
-                <input type="text" id="sql-pass" placeholder="••••••" oninput="updateSQLPreview()">
-                
+                <label>كلمة المرور:</label>
+                <input type="text" id="sql-pass" placeholder="••••" oninput="updateSQLPreview()">
                 <button class="action-btn" onclick="runSQLSim()">تسجيل الدخول</button>
                 <div id="sql-result" class="alert"></div>
             </div>
-
             <div class="box">
-                <h3>شاشة مراقبة الخادم (Live Backend Query)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">شاهد كيف يتم بناء الاستعلام في قاعدة البيانات لحظياً:</p>
-                <div class="code-monitor" id="sql-query-display">
-                    SELECT * FROM users WHERE username = '' AND password = '';
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">
-                    💡 تلميح للمتدرب: جرب إغلاق علامة التنصيص <code>'</code> وإضافة شرط منطقي صحيح دائماً مثل <code>' OR '1'='1</code>.
-                </p>
+                <h3>مراقب الاستعلام (Backend Query)</h3>
+                <div class="code-monitor" id="sql-query-display">SELECT * FROM users WHERE username = '' AND password = '';</div>
             </div>
         </div>
     </div>
 
-    <!-- المختبر الثاني: XSS -->
-    <div id="xss" class="lab-panel">
-        <h2>تحدي Reflected XSS: حقن الأكواد في المتصفح</h2>
-        <p><strong>الهدف:</strong> قم بحقن كود JavaScript داخل حقل البحث لإظهار نافذة منبثقة (Alert) أو استخراج كوكيز الجلسة الوهمي.</p>
-
+    <!-- التحدي 2: XSS -->
+    <div id="t2" class="lab-panel">
+        <h2>2. تحدي البرمجة عبر المواقع (Cross-Site Scripting - XSS)</h2>
+        <p><strong>الهدف:</strong> حقن كود JavaScript لتنفيذ أمر منبثق وسرقة الجلسة الوهمية.</p>
         <div class="toggle-defense">
             <input type="checkbox" id="xss-patch">
-            <label for="xss-patch">تفعيل الحماية (HTML Sanitization / Output Encoding)</label>
+            <label for="xss-patch">تفعيل الحماية (HTML Encoding & Sanitization)</label>
         </div>
-
         <div class="grid-2">
             <div class="box">
-                <h3>محرك بحث الموقع</h3>
-                <p style="font-size: 0.8rem; color: #fbbf24;">Session Cookie: <code>SESSION_ID=ABJ_99821_SECRET</code></p>
-                <input type="text" id="xss-input" placeholder="اكتب كلمة للبحث أو جرب: <img src=x onerror=alert('XSS')>">
+                <span class="badge">Session: SESSION_ID=ABJ_SECURE_99</span>
+                <input type="text" id="xss-input" placeholder="اكتب نصاً أو: <script>alert(1)</script>">
                 <button class="action-btn" onclick="runXSSSim()">بحث</button>
-                
-                <div style="margin-top: 20px; padding: 15px; background: #1f2937; border-radius: 6px;">
-                    <strong>نتائج البحث عن:</strong>
-                    <div id="xss-output" style="margin-top: 10px; color: var(--accent-green);">لا يوجد بحث بعد...</div>
+                <div style="margin-top:15px; background:#1f2937; padding:10px; border-radius:5px;">
+                    <strong>النتيجة المعروضة:</strong> <span id="xss-output" style="color:var(--accent-green);">فارغ</span>
                 </div>
                 <div id="xss-result" class="alert"></div>
             </div>
-
             <div class="box">
-                <h3>تحليل الكود المصدري (DOM Output)</h3>
-                <div class="code-monitor" id="xss-code-display">
-                    // الكود غير الآمن:<br>
-                    element.innerHTML = userInput;<br><br>
-                    // الكود الآمن:<br>
-                    element.textContent = userInput;
-                </div>
+                <h3>تحليل DOM</h3>
+                <div class="code-monitor">element.innerHTML = userInput; // مصاب<br>element.textContent = userInput; // آمن</div>
             </div>
         </div>
     </div>
 
-    <!-- المختبر الثالث: IDOR -->
-    <div id="idor" class="lab-panel">
-        <h2>تحدي IDOR: الوصول غير المصرح به للبيانات</h2>
-        <p><strong>الهدف:</strong> أنت مسجل الدخول حالياً برقم المستخدم <code>104</code>. حاول الوصول إلى ملف المدير (Admin) عبر التلاعب بمعامل الرابط.</p>
-
+    <!-- التحدي 3: IDOR -->
+    <div id="t3" class="lab-panel">
+        <h2>3. تجاوز الصلاحيات المباشر (IDOR)</h2>
+        <p><strong>الهدف:</strong> تعديل رقم المعرف في الرابط للوصول إلى ملف المدير رقم <code>101</code>.</p>
         <div class="box">
-            <label>شريط عنوان المتصفح المحاكى (Simulated URL):</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="idor-url" value="https://portal.aljasour.local/api/user?id=104" style="margin:0;">
-                <button class="action-btn" onclick="runIDORSim()">انتقال (Go)</button>
+            <label>رابط الطلب (URL):</label>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="idor-url" value="https://api.aljasour.local/user?id=104" style="margin:0;">
+                <button class="action-btn" onclick="runIDORSim()">إرسال الطلب</button>
             </div>
-
-            <div id="idor-profile" style="margin-top: 20px; padding: 15px; background: #1f2937; border-radius: 6px;">
-                <strong>البيانات المسترجعة من الخادم:</strong>
-                <pre id="idor-data" style="direction: ltr; text-align: left; color: #a7f3d0;">{ "id": 104, "name": "Trainee_Ahmed", "role": "Student" }</pre>
+            <div style="margin-top:15px; background:#1f2937; padding:15px; border-radius:5px;">
+                <pre id="idor-data" style="color:#a7f3d0; direction:ltr; text-align:left;">{ "id": 104, "role": "Student" }</pre>
             </div>
             <div id="idor-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 4: JWT Privilege Escalation -->
+    <div id="t4" class="lab-panel">
+        <h2>4. تصعيد الصلاحيات عبر التوكن (JWT Tampering)</h2>
+        <p><strong>الهدف:</strong> تعديل حمولة توكن الجلسة من دور مستخدم عادي <code>"role":"user"</code> إلى <code>"role":"admin"</code>.</p>
+        <div class="box">
+            <label>حمولة التوكن (JWT Payload Base64):</label>
+            <input type="text" id="jwt-input" value="eyJ1c2VyIjoiYWhtZWQiLCJyb2xlIjoidXNlciJ9">
+            <button class="action-btn" onclick="runJWTSim()">حقن التوكن</button>
+            <div id="jwt-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 5: Command Injection -->
+    <div id="t5" class="lab-panel">
+        <h2>5. حقن أوامر النظام (OS Command Injection)</h2>
+        <p><strong>الهدف:</strong> استغلال أداة فحص الشبكة عبر إرفاق أمر إضافي مثل <code>; cat /etc/passwd</code>.</p>
+        <div class="box">
+            <label>عنوان IP للفحص:</label>
+            <input type="text" id="cmd-input" value="127.0.0.1">
+            <button class="action-btn" onclick="runCmdSim()">تشغيل الفحص</button>
+            <div class="code-monitor" id="cmd-output" style="margin-top:15px; min-height:60px;">بانتظار المدخلات...</div>
+            <div id="cmd-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 6: Path Traversal -->
+    <div id="t6" class="lab-panel">
+        <h2>6. اجتياز المسارات (Directory / Path Traversal)</h2>
+        <p><strong>الهدف:</strong> قراءة ملف النظام الحساس عبر الهروب من المجلد الرئيسي باستخدام <code>../../</code>.</p>
+        <div class="box">
+            <label>اسم الملف المطلوب تحميله:</label>
+            <input type="text" id="path-input" value="reports/q1.pdf">
+            <button class="action-btn" onclick="runPathSim()">قراءة الملف</button>
+            <div class="code-monitor" id="path-output" style="margin-top:15px; min-height:60px;">الملف فارغ</div>
+            <div id="path-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 7: CSRF -->
+    <div id="t7" class="lab-panel">
+        <h2>7. تزوير الطلبات عبر المواقع (CSRF)</h2>
+        <p><strong>الهدف:</strong> محاكاة صفحة خبيثة تُرسل طلباً خفياً لتغيير البريد الإلكتروني للمستخدم دون علمه.</p>
+        <div class="box">
+            <label>كود النموذج الخبيث المحاكى:</label>
+            <textarea id="csrf-input" rows="3">&lt;form action="https://bank.local/update-email" method="POST"&gt;&lt;input name="email" value="attacker@evil.com"&gt;&lt;/form&gt;</textarea>
+            <button class="action-btn" onclick="runCSRFSim()">تنفيذ الهجوم الوهمي</button>
+            <div id="csrf-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 8: Unrestricted File Upload -->
+    <div id="t8" class="lab-panel">
+        <h2>8. رفع الملفات غير المقيد (Unrestricted File Upload)</h2>
+        <p><strong>الهدف:</strong> محاولة رفع ملف تنفيذي خبيث بصيغة <code>webshell.php</code> بدلاً من صورة صالحة.</p>
+        <div class="box">
+            <label>اسم الملف المرفوع:</label>
+            <input type="text" id="upload-input" value="avatar.png">
+            <button class="action-btn" onclick="runUploadSim()">رفع الملف</button>
+            <div id="upload-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 9: Business Logic Flaw -->
+    <div id="t9" class="lab-panel">
+        <h2>9. الثغرات المنطقية للتجارة الإلكترونية (Business Logic)</h2>
+        <p><strong>الهدف:</strong> التلاعب بكمية المنتجات في سلة التسوق بإدخال قيمة سالبة للحصول على رصيد مجاني.</p>
+        <div class="box">
+            <label>كمية المنتج في السلة:</label>
+            <input type="text" id="logic-input" value="1">
+            <button class="action-btn" onclick="runLogicSim()">تحديث السلة وحساب الإجمالي</button>
+            <div class="code-monitor" id="logic-output" style="margin-top:15px;">الإجمالي: 100 ريال</div>
+            <div id="logic-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 10: Weak Cryptographic Hash -->
+    <div id="t10" class="lab-panel">
+        <h2>10. ضعف التشفير والتجزئة (Weak Hashing)</h2>
+        <p><strong>الهدف:</strong> التعرف على خطر استخدام خوارزميات قديمة مثل MD5 واستخدام جداول التكسير (Rainbow Tables).</p>
+        <div class="box">
+            <label>قيمة الـ Hash المراد فكها (MD5):</label>
+            <input type="text" id="hash-input" value="5f4dcc3b5aa765d61d8327deb882cf99">
+            <button class="action-btn" onclick="runHashSim()">فك التجزئة</button>
+            <div id="hash-result" class="alert"></div>
+        </div>
+    </div>
+
+    <!-- التحدي 11: SOC Log Analysis -->
+    <div id="t11" class="lab-panel">
+        <h2>11. تحليل سجلات حوادث الأمان (SOC Log Analysis)</h2>
+        <p><strong>الهدف:</strong> فحص السجلات التالية ومعرفة عنوان IP الخاص بالمهاجم الذي نفذ هجوم المسح.</p>
+        <div class="box">
+            <div class="code-monitor" style="font-size:0.8rem;">
+                192.168.1.10 - GET /index.php 200<br>
+                192.168.1.45 - POST /login.php 302<br>
+                <span style="color:var(--accent-red);">203.0.113.50 - GET /admin/config.bak 403 (Attack Scan)</span><br>
+                192.168.1.12 - GET /about.html 200
+            </div>
+            <label style="margin-top:15px; display:block;">حدد عنوان IP المهاجم من السجلات:</label>
+            <input type="text" id="soc-input" placeholder="0.0.0.0">
+            <button class="action-btn" onclick="runSOCSim()">تحقق من الإجابة</button>
+            <div id="soc-result" class="alert"></div>
         </div>
     </div>
 </div>
 
 <script>
-    let completed = { sqli: false, xss: false, idor: false };
+    let completed = { t1: false, t2: false, t3: false, t4: false, t5: false, t6: false, t7: false, t8: false, t9: false, t10: false, t11: false };
 
     function updateScore() {
         const count = Object.values(completed).filter(Boolean).length;
@@ -266,114 +380,167 @@
         btn.classList.add('active');
     }
 
-    // --- منطق محاكاة SQL Injection ---
-    function updateSQLPreview() {
-        const user = document.getElementById('sql-user').value;
-        const pass = document.getElementById('sql-pass').value;
-        const isPatched = document.getElementById('sqli-patch').checked;
-        const display = document.getElementById('sql-query-display');
-
-        if (isPatched) {
-            display.innerHTML = `PREPARE stmt FROM 'SELECT * FROM users WHERE username = ? AND password = ?';<br>EXECUTE stmt USING '${escapeHTML(user)}', '${escapeHTML(pass)}';`;
-        } else {
-            const formattedUser = user.includes("'") ? `<span class="highlight-inject">${escapeHTML(user)}</span>` : escapeHTML(user);
-            const formattedPass = pass.includes("'") ? `<span class="highlight-inject">${escapeHTML(pass)}</span>` : escapeHTML(pass);
-            display.innerHTML = `SELECT * FROM users WHERE username = '${formattedUser}' AND password = '${formattedPass}';`;
-        }
-    }
-
-    function runSQLSim() {
-        const user = document.getElementById('sql-user').value.trim();
-        const pass = document.getElementById('sql-pass').value.trim();
-        const isPatched = document.getElementById('sqli-patch').checked;
-        const resultBox = document.getElementById('sql-result');
-
-        if (isPatched) {
-            resultBox.className = 'alert error';
-            resultBox.innerHTML = '🛡️ تم صد الهجوم! الاستعلام المُعد مسبقاً (Prepared Statement) عامل المدخلات كنص عادي وليس كأوامر SQL.';
-            return;
-        }
-
-        const sqliPatterns = ["' or '1'='1", "' or 1=1", "' or 'a'='a", "admin' --", "admin'--"];
-        const isInjected = sqliPatterns.some(p => user.toLowerCase().includes(p) || pass.toLowerCase().includes(p));
-
-        if (isInjected) {
-            resultBox.className = 'alert success';
-            resultBox.innerHTML = '✅ تم اختراق المصادقة بنجاح! <br><strong>Flag:</strong> <code>FLAG{SQLi_Auth_Bypass_Master_2026}</code>';
-            completed.sqli = true;
-            updateScore();
-        } else {
-            resultBox.className = 'alert error';
-            resultBox.innerHTML = '❌ فشل تسجيل الدخول: اسم المستخدم أو كلمة المرور غير صحيحة.';
-        }
-    }
-
-    // --- منطق محاكاة XSS ---
-    function runXSSSim() {
-        const input = document.getElementById('xss-input').value;
-        const isPatched = document.getElementById('xss-patch').checked;
-        const output = document.getElementById('xss-output');
-        const resultBox = document.getElementById('xss-result');
-
-        if (isPatched) {
-            output.textContent = input;
-            resultBox.className = 'alert error';
-            resultBox.innerHTML = '🛡️ تم تعطيل كود HTML/JS وتحويله إلى نص آمن (Text Encoding).';
-            return;
-        }
-
-        // تنفيذ محاكاة XSS
-        output.innerHTML = input;
-        const xssTriggered = /<script|onerror|onload|javascript:|alert\(/i.test(input);
-        
-        if (xssTriggered) {
-            resultBox.className = 'alert success';
-            resultBox.innerHTML = '✅ تم اكتشاف وتنفيذ ثغرة XSS بنجاح! <br><strong>Flag:</strong> <code>FLAG{XSS_DOM_Execution_Confirmed}</code>';
-            completed.xss = true;
-            updateScore();
-        } else {
-            resultBox.style.display = 'none';
-        }
-    }
-
-    // --- منطق محاكاة IDOR ---
-    function runIDORSim() {
-        const url = document.getElementById('idor-url').value;
-        const dataBox = document.getElementById('idor-data');
-        const resultBox = document.getElementById('idor-result');
-
-        const match = url.match(/id=(\d+)/);
-        if (!match) {
-            dataBox.innerText = '{ "error": "Missing ID parameter" }';
-            return;
-        }
-
-        const id = match[1];
-        const mockDB = {
-            "101": '{ "id": 101, "name": "Eng_Abdullah_Admin", "role": "SuperAdmin", "secret_key": "KSA_CYBER_2030" }',
-            "102": '{ "id": 102, "name": "Sara_Analyst", "role": "SOC_Tier1" }',
-            "103": '{ "id": 103, "name": "Omar_Dev", "role": "Developer" }',
-            "104": '{ "id": 104, "name": "Trainee_Ahmed", "role": "Student" }'
-        };
-
-        if (mockDB[id]) {
-            dataBox.innerText = mockDB[id];
-            if (id === "101") {
-                resultBox.className = 'alert success';
-                resultBox.innerHTML = '✅ تم استغلال ثغرة IDOR والوصول لبيانات المدير! <br><strong>Flag:</strong> <code>FLAG{IDOR_Broken_Access_Control_101}</code>';
-                completed.idor = true;
-                updateScore();
-            } else {
-                resultBox.style.display = 'none';
-            }
-        } else {
-            dataBox.innerText = '{ "error": "User not found" }';
-            resultBox.style.display = 'none';
-        }
-    }
-
     function escapeHTML(str) {
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // 1. SQLi
+    function updateSQLPreview() {
+        const u = document.getElementById('sql-user').value;
+        const p = document.getElementById('sql-pass').value;
+        const patched = document.getElementById('sqli-patch').checked;
+        const disp = document.getElementById('sql-query-display');
+        if (patched) {
+            disp.innerText = `PREPARE stmt FROM 'SELECT * FROM users WHERE username = ? AND password = ?';\nEXECUTE stmt USING '${u}', '${p}';`;
+        } else {
+            disp.innerHTML = `SELECT * FROM users WHERE username = '${escapeHTML(u)}' AND password = '${escapeHTML(p)}';`;
+        }
+    }
+    function runSQLSim() {
+        const u = document.getElementById('sql-user').value.toLowerCase();
+        const p = document.getElementById('sql-pass').value.toLowerCase();
+        const res = document.getElementById('sql-result');
+        if (document.getElementById('sqli-patch').checked) {
+            res.className = 'alert error'; res.innerHTML = '🛡️ تم صد الهجوم بواسطة Prepared Statements بنجاح.'; return;
+        }
+        if (u.includes("' or '1'='1") || u.includes("or 1=1") || p.includes("' or '1'='1")) {
+            res.className = 'alert success'; res.innerHTML = '✅ تم اختراق المصادقة! <strong>Flag:</strong> <code>FLAG{SQLi_Bypass_2026}</code>';
+            completed.t1 = true; updateScore();
+        } else { res.className = 'alert error'; res.innerHTML = '❌ بيانات غير صحيحة.'; }
+    }
+
+    // 2. XSS
+    function runXSSSim() {
+        const val = document.getElementById('xss-input').value;
+        const out = document.getElementById('xss-output');
+        const res = document.getElementById('xss-result');
+        if (document.getElementById('xss-patch').checked) {
+            out.textContent = val; res.className = 'alert error'; res.innerHTML = '🛡️ تم تحويل المدخلات إلى نص آمن (Encoding).'; return;
+        }
+        out.innerHTML = val;
+        if (/<script|onerror|alert\(/i.test(val)) {
+            res.className = 'alert success'; res.innerHTML = '✅ تم تنفيذ ثغرة XSS بنجاح! <strong>Flag:</strong> <code>FLAG{XSS_DOM_Master}</code>';
+            completed.t2 = true; updateScore();
+        } else { res.style.display = 'none'; }
+    }
+
+    // 3. IDOR
+    function runIDORSim() {
+        const url = document.getElementById('idor-url').value;
+        const data = document.getElementById('idor-data');
+        const res = document.getElementById('idor-result');
+        if (url.includes("id=101")) {
+            data.innerText = '{ "id": 101, "name": "Admin_Abdullah", "role": "SuperAdmin", "secret": "KSA_CYBER_FLAG" }';
+            res.className = 'alert success'; res.innerHTML = '✅ تم الوصول لصلاحيات المدير بنجاح! <strong>Flag:</strong> <code>FLAG{IDOR_Admin_101}</code>';
+            completed.t3 = true; updateScore();
+        } else {
+            data.innerText = '{ "id": 104, "role": "Student" }';
+            res.className = 'alert error'; res.innerHTML = '❌ صلاحيات عادية (غير مصرح بالوصول للملف المطلوب).';
+        }
+    }
+
+    // 4. JWT
+    function runJWTSim() {
+        const val = document.getElementById('jwt-input').value;
+        const res = document.getElementById('jwt-result');
+        try {
+            const decoded = JSON.parse(atob(val));
+            if (decoded.role === 'admin') {
+                res.className = 'alert success'; res.innerHTML = '✅ تم تصعيد الصلاحيات لـ Admin بنجاح! <strong>Flag:</strong> <code>FLAG{JWT_Privilege_Esc}</code>';
+                completed.t4 = true; updateScore();
+            } else {
+                res.className = 'alert error'; res.innerHTML = '❌ الدور الحالي لا يزال: ' + decoded.role;
+            }
+        } catch(e) {
+            res.className = 'alert error'; res.innerHTML = '❌ صيغة Base64 غير صالحة.';
+        }
+    }
+
+    // 5. Command Injection
+    function runCmdSim() {
+        const ip = document.getElementById('cmd-input').value;
+        const out = document.getElementById('cmd-output');
+        const res = document.getElementById('cmd-result');
+        if (ip.includes(';')) {
+            out.innerHTML = "Pinging 127.0.0.1...\nroot:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:...";
+            res.className = 'alert success'; res.innerHTML = '✅ تم حقن وقراءة ملفات النظام! <strong>Flag:</strong> <code>FLAG{CMD_Injection_Linux}</code>';
+            completed.t5 = true; updateScore();
+        } else {
+            out.innerHTML = `Pinging ${ip} with 32 bytes of data:\nReply from ${ip}: bytes=32 time=12ms TTL=118`;
+            res.style.display = 'none';
+        }
+    }
+
+    // 6. Path Traversal
+    function runPathSim() {
+        const path = document.getElementById('path-input').value;
+        const out = document.getElementById('path-output');
+        const res = document.getElementById('path-result');
+        if (path.includes('../')) {
+            out.innerText = "root:x:0:0:SuperUser:/root:/bin/bash\n[SYSTEM_SECRET_KEY=ALJASOUR_2026]";
+            res.className = 'alert success'; res.innerHTML = '✅ تم تجاوز المسار وقراءة الملفات الحساسة! <strong>Flag:</strong> <code>FLAG{Path_Traversal_Master}</code>';
+            completed.t6 = true; updateScore();
+        } else {
+            out.innerText = "PDF Document Content: Report Q1 Financials... (Normal Access)";
+            res.style.display = 'none';
+        }
+    }
+
+    // 7. CSRF
+    function runCSRFSim() {
+        const res = document.getElementById('csrf-result');
+        res.className = 'alert success'; res.innerHTML = '✅ تم تنفيذ هجوم تزوير الطلبات (CSRF) وتغيير البريد بنجاح! <strong>Flag:</strong> <code>FLAG{CSRF_Request_Forged}</code>';
+        completed.t7 = true; updateScore();
+    }
+
+    // 8. File Upload
+    function runUploadSim() {
+        const file = document.getElementById('upload-input').value.toLowerCase();
+        const res = document.getElementById('upload-result');
+        if (file.endsWith('.php') || file.endsWith('.phtml') || file.endsWith('.asp')) {
+            res.className = 'alert success'; res.innerHTML = '✅ تم رفع السيرفر الخلفي (WebShell) بنجاح! <strong>Flag:</strong> <code>FLAG{Unrestricted_Upload}</code>';
+            completed.t8 = true; updateScore();
+        } else {
+            res.className = 'alert error'; res.innerHTML = '❌ تم رفض الملف أو قبوله كصورة عادية آمنة.';
+        }
+    }
+
+    // 9. Business Logic
+    function runLogicSim() {
+        const qty = parseInt(document.getElementById('logic-input').value);
+        const out = document.getElementById('logic-output');
+        const res = document.getElementById('logic-result');
+        out.innerText = `الإجمالي: ${qty * 100} ريال`;
+        if (qty < 0) {
+            res.className = 'alert success'; res.innerHTML = '✅ تم استغلال الخلل المنطقي وإضافة رصيد للحساب! <strong>Flag:</strong> <code>FLAG{Logic_Flaw_Negative_Qty}</code>';
+            completed.t9 = true; updateScore();
+        } else {
+            res.style.display = 'none';
+        }
+    }
+
+    // 10. Weak Hash
+    function runHashSim() {
+        const h = document.getElementById('hash-input').value.trim();
+        const res = document.getElementById('hash-result');
+        if (h === '5f4dcc3b5aa765d61d8327deb882cf99') {
+            res.className = 'alert success'; res.innerHTML = '✅ تم فك تجزئة MD5 بنجاح! الكلمة الأصلية هي: <code>password</code> <br><strong>Flag:</strong> <code>FLAG{MD5_Rainbow_Table}</code>';
+            completed.t10 = true; updateScore();
+        } else {
+            res.className = 'alert error'; res.innerHTML = '❌ قيمة الـ Hash غير مطابقة للتحدي.';
+        }
+    }
+
+    // 11. SOC Logs
+    function runSOCSim() {
+        const ip = document.getElementById('soc-input').value.trim();
+        const res = document.getElementById('soc-result');
+        if (ip === '203.0.113.50') {
+            res.className = 'alert success'; res.innerHTML = '✅ تحليلك الأمني صحيح! تم رصد عنوان IP المهاجم بنجاح. <strong>Flag:</strong> <code>FLAG{SOC_Log_Analysis_Pro}</code>';
+            completed.t11 = true; updateScore();
+        } else {
+            res.className = 'alert error'; res.innerHTML = '❌ عنوان IP غير صحيح، راجع السجلات بدقة.';
+        }
     }
 </script>
 
